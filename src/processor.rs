@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 use std::usize;
+use crate::memory::Memory;
 
 
 const NUM_REG: usize = 32;
@@ -18,19 +19,21 @@ const D1: usize = 0;
 const LBI: u8 = 0;
 
 
-pub struct Processor {
+pub struct Processor<'a> {
     reg: Vec<i32>,
     freg: Vec<f32>,
     dreg: Vec<f64>,
+    vm: &'a mut Memory
 }
 
 
 #[allow(dead_code)]
-impl Processor {
-    pub fn new() -> Self {
+impl<'a> Processor<'a> {
+    pub fn new(m: &'a mut Memory) -> Self {
         Processor {reg: vec![0_i32; NUM_REG],
                    freg: vec![0.0_f32; NUM_FREG],
-                   dreg: vec![0.0_f64; NUM_DREG]
+                   dreg: vec![0.0_f64; NUM_DREG],
+                   vm: m
         }
     }
 
@@ -55,12 +58,13 @@ mod tests {
 
     #[test]
     fn test_new_processor() {
-        let _ = Processor::new();
+        let _ = Processor::new(&mut Memory::new(1024));
     }
 
     #[test]
     fn test_processor_reg_manipulate() {
-        let mut proc = Processor::new();
+        let mut vm = Memory::new(1024);
+        let mut proc = Processor::new(&mut vm);
         *proc.r(IP) = 1;
         assert_eq!(*proc.r(IP), 1);
 
@@ -70,7 +74,8 @@ mod tests {
 
     #[test]
     fn test_processor_freg_manipulate() {
-        let mut proc = Processor::new();
+        let mut vm = Memory::new(1024);
+        let mut proc = Processor::new(&mut vm);
         *proc.fr(F1) = 1_f32;
         assert_eq!(*proc.fr(IP), 1_f32);
 
@@ -80,7 +85,8 @@ mod tests {
 
     #[test]
     fn test_processor_dreg_manipulate() {
-        let mut proc = Processor::new();
+        let mut vm = Memory::new(1024);
+        let mut proc = Processor::new(&mut vm);
         *proc.dr(D1) = 1_f64;
         assert_eq!(*proc.dr(D1), 1_f64);
 
