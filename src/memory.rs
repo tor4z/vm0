@@ -14,11 +14,13 @@ impl Memory {
     /// Create a virtual memory instance.
     /// 
     /// Argument:
+    /// 
     /// * cap: The capacity of the virtual memory
     /// 
     /// Return: The virtual memory instalce
     /// 
     /// Example
+    /// 
     /// ```
     /// use vm0::memory::Memory;
     /// // Create a virtual memory instance with 1024 bytes.
