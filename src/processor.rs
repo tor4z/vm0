@@ -1,6 +1,7 @@
 #![allow(dead_code)]
-
 use std::usize;
+
+
 const NUM_REG: usize = 32;
 const NUM_FREG: usize = 10;
 const NUM_DREG: usize = 10;
@@ -26,7 +27,7 @@ pub struct Processor {
 
 #[allow(dead_code)]
 impl Processor {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Processor {reg: vec![0_i32; NUM_REG],
                    freg: vec![0.0_f32; NUM_FREG],
                    dreg: vec![0.0_f64; NUM_DREG]
