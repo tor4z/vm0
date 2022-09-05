@@ -30,7 +30,7 @@ pub struct Processor {
     reg: Vec<i32>,
     freg: Vec<f32>,
     dreg: Vec<f64>,
-    pub vm: Memory
+    pub mem: Memory
 }
 
 
@@ -55,7 +55,7 @@ impl Processor {
         Processor {reg: vec![0_i32; NUM_REG],
                    freg: vec![0.0_f32; NUM_FREG],
                    dreg: vec![0.0_f64; NUM_DREG],
-                   vm: m
+                   mem: m
         }
     }
 
