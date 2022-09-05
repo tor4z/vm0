@@ -1,6 +1,5 @@
-use vm0::{memory::Memory, processor::Processor};
+use vm0::{memory::Memory, processor::Processor, constant::* };
 mod common;
-
 
 #[test]
 #[allow(unused_variables)]
@@ -29,8 +28,10 @@ fn test_write_memory_with_vec() {
 
 
 #[test]
-#[allow(unused_variables)]
 fn test_processor_inst_lbi() {
-    let proc = create_proc!(10);
-    // TODO implement me.
+    let mut proc = create_proc!(1024);
+    let instr: Vec<u8> = vec![LBI, R1 as u8, 0x1, HALT];
+    proc.mem.write(&instr, 0).unwrap();
+    proc.exec().unwrap();
+    assert_eq!(proc.reg[R1], 0x1);
 }

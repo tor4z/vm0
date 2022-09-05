@@ -1,33 +1,11 @@
-//! ## Instruction table
-//! LBI R, byte
-//! 
-//! * Meaning: Store byte constant in R
-//! * Encoding: BBB
-//! 
-//! 
 #![allow(dead_code)]
+use core::panic;
 use std::usize;
 use crate::memory::Memory;
-
-
-const NUM_REG: usize = 32;
-const NUM_FREG: usize = 10;
-const NUM_DREG: usize = 10;
-
-const IP: usize = 0;
-const SP: usize = 1;
-const FP: usize = 2;
-const BE: usize = 3;
-
-const F1: usize = 0;
-
-const D1: usize = 0;
-
-const LBI: u8 = 0;
-
+use crate::constant::*;
 
 pub struct Processor {
-    reg: Vec<i32>,
+    pub reg: Vec<i32>, // TODO remove pub later.
     freg: Vec<f32>,
     dreg: Vec<f64>,
     pub mem: Memory
@@ -59,8 +37,12 @@ impl Processor {
         }
     }
 
-    fn r(&mut self, index: usize) -> &mut i32 {
-        &mut self.reg[index]
+    fn r(&self, index: usize) -> i32 {
+        self.reg[index]
+    }
+
+    fn write_r(&mut self, index: usize, v: i32) {
+        self.reg[index] = v;
     }
 
     fn fr (&mut self, index: usize) -> &mut f32 {
@@ -69,6 +51,27 @@ impl Processor {
 
     fn dr(&mut self, index: usize) -> &mut f64 {
         &mut self.dreg[index]
+    }
+
+    pub fn exec(&mut self) -> Result<(), &str> {
+        loop {
+            let ip = self.r(IP);
+            match self.mem[ip as usize] {
+                LBI => {
+                    let r = self.mem[(ip + 1) as usize];
+                    let b = self.mem[(ip + 2) as usize];
+                    self.write_r(r as usize, b as i32);
+                    self.write_r(IP, ip + 3);
+                }
+                HALT => {
+                    break;
+                }
+                _ => {
+                    panic!("Unknown instruction")
+                }
+            }
+        }
+        Ok(())
     }
 }
 
@@ -87,11 +90,11 @@ mod tests {
     fn test_processor_reg_manipulate() {
         let vm = Memory::new(1024);
         let mut proc = Processor::new(vm);
-        *proc.r(IP) = 1;
-        assert_eq!(*proc.r(IP), 1);
+        proc.write_r(IP, 1);
+        assert_eq!(proc.r(IP), 1);
 
-        *proc.r(IP) += 1;
-        assert_eq!(*proc.r(IP), 2);
+        proc.write_r(IP, proc.r(IP) + 1);
+        assert_eq!(proc.r(IP), 2);
     }
 
     #[test]
