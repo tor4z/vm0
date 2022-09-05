@@ -26,8 +26,8 @@ impl Processor {
     /// ```
     /// #![allow(dead_code)]
     /// use vm0::{processor::Processor, memory::Memory};
-    /// let vm = Memory::new(1024);
-    /// let proc = Processor::new(vm);
+    /// let m = Memory::new(1024);
+    /// let proc = Processor::new(m);
     /// ```
     pub fn new(m: Memory) -> Self {
         Processor {reg: vec![0_i32; NUM_REG],
@@ -88,8 +88,8 @@ mod tests {
 
     #[test]
     fn test_processor_reg_manipulate() {
-        let vm = Memory::new(1024);
-        let mut proc = Processor::new(vm);
+        let m = Memory::new(1024);
+        let mut proc = Processor::new(m);
         proc.write_r(IP, 1);
         assert_eq!(proc.r(IP), 1);
 
@@ -99,8 +99,8 @@ mod tests {
 
     #[test]
     fn test_processor_freg_manipulate() {
-        let vm = Memory::new(1024);
-        let mut proc = Processor::new(vm);
+        let m = Memory::new(1024);
+        let mut proc = Processor::new(m);
         *proc.fr(F1) = 1_f32;
         assert_eq!(*proc.fr(IP), 1_f32);
 
@@ -110,8 +110,8 @@ mod tests {
 
     #[test]
     fn test_processor_dreg_manipulate() {
-        let vm = Memory::new(1024);
-        let mut proc = Processor::new(vm);
+        let m = Memory::new(1024);
+        let mut proc = Processor::new(m);
         *proc.dr(D1) = 1_f64;
         assert_eq!(*proc.dr(D1), 1_f64);
 
