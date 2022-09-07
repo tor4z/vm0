@@ -1,8 +1,6 @@
-#![allow(dead_code)]
-
 use std::ops::Index;
 
-struct Buffer<const CAP: usize> {
+pub struct Buffer<const CAP: usize> {
     data: [u8; CAP],
     index: usize,
     cap: usize
@@ -10,7 +8,7 @@ struct Buffer<const CAP: usize> {
 
 
 impl<const CAP: usize> Buffer<CAP> {
-    fn new() -> Buffer<CAP> {
+    pub fn new() -> Buffer<CAP> {
         Buffer {
             data: [0; CAP],
             index: 0,
@@ -18,17 +16,21 @@ impl<const CAP: usize> Buffer<CAP> {
         }
     }
 
-    fn push(&mut self, byte: u8) {
+    pub fn push(&mut self, byte: u8) {
         self.data[self.index] = byte;
         self.index += 1;
     }
 
-    fn data(&self) -> &[u8; CAP] {
+    pub fn data(&self) -> &[u8; CAP] {
         &self.data
     }
 
-    fn size(&self) -> usize {
+    pub fn size(&self) -> usize {
         self.index
+    }
+
+    pub fn cap(&self) -> usize {
+        self.cap
     }
 }
 
@@ -48,7 +50,8 @@ mod tests {
 
     #[test]
     fn create_buffer() {
-        let _buf: Buffer<32> = Buffer::new();
+        let buf: Buffer<32> = Buffer::new();
+        assert_eq!(buf.cap(), 32);
     }
 
     #[test]
