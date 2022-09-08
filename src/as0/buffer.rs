@@ -44,6 +44,36 @@ impl<const CAP: usize> Index<usize> for Buffer<CAP> {
 }
 
 
+impl<const CAP: usize> From<String> for Buffer<CAP> {
+    fn from(string: String) -> Self {
+        if string.len() >= CAP {
+            panic!("buffer overflow.")
+        }
+
+        let mut buf: Buffer<CAP> = Buffer::new();
+        for &c in string.as_bytes() {
+            buf.push(c as u8)
+        }
+        buf
+    }    
+}
+
+
+impl<const CAP: usize> From<&str> for Buffer<CAP> {
+    fn from(string: &str) -> Self {
+        if string.len() >= CAP {
+            panic!("buffer overflow.")
+        }
+
+        let mut buf: Buffer<CAP> = Buffer::new();
+        for &c in string.as_bytes() {
+            buf.push(c as u8)
+        }
+        buf
+    }    
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -97,5 +127,53 @@ mod tests {
         buf.push(0x1);
 
         assert_eq!(buf.size(), 2);
+    }
+
+    #[test]
+    fn create_buffer_from_string() {
+        let buf: Buffer<32> = Buffer::from(String::from("Hello"));
+        assert_eq!(buf[0], 'H' as u8);
+        assert_eq!(buf[1], 'e' as u8);
+        assert_eq!(buf[2], 'l' as u8);
+        assert_eq!(buf[3], 'l' as u8);
+        assert_eq!(buf[4], 'o' as u8);
+    }
+
+    #[test]
+    #[should_panic]
+    fn create_buffer_from_string_overflow() {
+        let _buf: Buffer<4> = Buffer::from(String::from("hello word"));
+    }
+
+    #[test]
+    fn create_buffer_from_str() {
+        let buf: Buffer<32> = Buffer::from("Hello");
+        assert_eq!(buf[0], 'H' as u8);
+        assert_eq!(buf[1], 'e' as u8);
+        assert_eq!(buf[2], 'l' as u8);
+        assert_eq!(buf[3], 'l' as u8);
+        assert_eq!(buf[4], 'o' as u8);
+    }
+
+    #[test]
+    fn create_str_into_buffer() {
+        let buf: Buffer<32> = "Hello".into();
+        assert_eq!(buf[0], 'H' as u8);
+        assert_eq!(buf[1], 'e' as u8);
+        assert_eq!(buf[2], 'l' as u8);
+        assert_eq!(buf[3], 'l' as u8);
+        assert_eq!(buf[4], 'o' as u8);
+    }
+
+    #[test]
+    #[should_panic]
+    fn create_buffer_from_str_overflow() {
+        let _buf: Buffer<4> = Buffer::from("hello word");
+    }
+
+    #[test]
+    #[should_panic]
+    fn create_str_into_buffer_overflow() {
+        let _buf: Buffer<4> = "hello word".into();
     }
 }
